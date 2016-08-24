@@ -64,26 +64,46 @@ def clear_screan():
     else:
         os.system('clear') # on linux / os x
 
-while True:
-    
-    clear_screan()
-
-    giris = input("Yeni Birşey Eklemek İster Misiniz (0-1): ")
-
-    if giris == "1":
+def yer_ekle():
+    print("Çıkış: 0")
+    while True:
         yemek_yeri = input("Yemek Yeri: ")
-        if yemek_yeri in tam_liste:
+        if yemek_yeri == "0":
+            return
+        elif yemek_yeri in tam_liste:
             print("Bu seçenek zaten ekli !\n")
             time.sleep(2)
+        elif yemek_yeri == "":
+            print("Boş Karakter Giremezsiniz !\n")
         else:
-            db.execute("INSERT INTO yerler VALUES ('{0}', 5,'{1}')".format(yemek_yeri, bu_gun_tarih))
+            db.execute("INSERT INTO yerler VALUES ('{0}', 5, '{1}')".format(yemek_yeri, bu_gun_tarih))
             vt.commit()
+
+while True:
+
+    clear_screan()
+
+    if tam_liste == []:
+        print("Database Boş Lütfen Birşeyler Ekleyiniz !")
+        yer_ekle()
+    else:
+        giris = input("Yeni Birşey Eklemek İster Misiniz (0-1): ")
+        if giris == "1":
+            yer_ekle()
+
+    tam_liste_ayarla()
+    db = vt.cursor()
 
     clear_screan()
 
     inpt = input("Çevir: \n")
 
     del_liste = copy.deepcopy(tmp_liste)
+
+    if del_liste == []:
+        tmp_liste = copy.deepcopy(tam_liste)
+        del_liste = copy.deepcopy(tmp_liste)
+
     liste = []
     secilen = ""
 
