@@ -98,11 +98,8 @@ while True:
 
     inpt = input("Çevir: \n")
 
+    tmp_liste = copy.deepcopy(tam_liste)
     del_liste = copy.deepcopy(tmp_liste)
-
-    if del_liste == []:
-        tmp_liste = copy.deepcopy(tam_liste)
-        del_liste = copy.deepcopy(tmp_liste)
 
     liste = []
     secilen = ""
