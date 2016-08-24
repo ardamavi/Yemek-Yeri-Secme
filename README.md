@@ -8,4 +8,4 @@ TechNarts - http://technarts.com
 
 Sqlite Database ekran görüntüsü:
 (Program: sqlitebrowser)
-<img src="http://i.hizliresim.com/mEzyE0.png" width="500">
+<img src="http://i.hizliresim.com/7Abn6l.png" width="500">
