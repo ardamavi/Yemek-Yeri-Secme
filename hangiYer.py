@@ -10,6 +10,8 @@ bu_gun_tarih  = time.strftime("%d.%m.%Y", time.localtime())
 vt = sqlite3.connect('database.sqlite')
 db = vt.cursor()
 
+db.execute("CREATE TABLE IF NOT EXISTS yerler (yer, puan, tarih)")
+
 tam_liste = []
 tmp_liste = []
 
@@ -65,31 +67,30 @@ def clear_screan():
         os.system('clear') # on linux / os x
 
 def yer_ekle():
-    print("Çıkış: 0")
+    print("Çıkış: Boş Enter")
     while True:
         yemek_yeri = input("Yemek Yeri: ")
-        if yemek_yeri == "0":
-            return
-        elif yemek_yeri in tam_liste:
+        if yemek_yeri in tam_liste:
             print("Bu seçenek zaten ekli !\n")
-            time.sleep(2)
         elif yemek_yeri == "":
-            print("Boş Karakter Giremezsiniz !\n")
+            return
         else:
             db.execute("INSERT INTO yerler VALUES ('{0}', 5, '{1}')".format(yemek_yeri, bu_gun_tarih))
+            tmp_liste.append(yemek_yeri)
             vt.commit()
+        tam_liste_ayarla()
 
 while True:
 
     clear_screan()
 
-    if tam_liste == []:
+    while len(tmp_liste) < 2:
         print("Database Boş Lütfen Birşeyler Ekleyiniz !")
         yer_ekle()
-    else:
-        giris = input("Yeni Birşey Eklemek İster Misiniz (0-1): ")
-        if giris == "1":
-            yer_ekle()
+
+    giris = input("Yeni Birşey Eklemek İster Misiniz (Evet: 1): ")
+    if giris == "1":
+        yer_ekle()
 
     tam_liste_ayarla()
     db = vt.cursor()
@@ -98,7 +99,6 @@ while True:
 
     inpt = input("Çevir: \n")
 
-    tmp_liste = copy.deepcopy(tam_liste)
     del_liste = copy.deepcopy(tmp_liste)
 
     liste = []
@@ -114,7 +114,7 @@ while True:
         time.sleep(0.3)
 
     print("\nSeçilen: " + liste[-1])
-    inpt = input("Güzel Mi ? (Evet: 1 - Hayır: 0)")
+    inpt = input("Güzel Mi ? (Hayır: 0)")
 
     db.execute("SELECT puan FROM yerler WHERE yer = '{0}'".format(liste[-1]))
     puan = db.fetchall()[0][0]
@@ -126,8 +126,9 @@ while True:
         if tmp_liste == []:
             tam_liste_ayarla()
     else:
-        db.execute("UPDATE yerler SET puan = {0} WHERE yer = '{1}'".format(int(puan)+1, liste[-1]))
-        vt.commit()
+        if int(puan) < 10:
+            db.execute("UPDATE yerler SET puan = {0} WHERE yer = '{1}'".format(int(puan)+1, liste[-1]))
+            vt.commit()
         break
 if vt:
     vt.commit()
